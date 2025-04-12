@@ -6,12 +6,25 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Notepad</h1>
+  <div class="container">
+    <h1>📝 Notepad</h1>
 
-  <textarea id="noteContent" rows="20" placeholder="Write your notes here..."></textarea>
-  <button onclick="saveNote()">💾 Save</button>
+    <!-- Save button at the top -->
+    <div class="button-bar">
+      <button onclick="saveNote()">💾 Save</button>
+    </div>
 
-  <p id="status" style="text-align:center;"></p>
+    <!-- Editor -->
+    <textarea id="noteContent" placeholder="Write your notes here..."></textarea>
+
+    <!-- Save button at the bottom -->
+    <div class="button-bar">
+      <button onclick="saveNote()">💾 Save</button>
+    </div>
+
+    <!-- Status -->
+    <p id="status"></p>
+  </div>
 
   <script src="app.js"></script>
 </body>
