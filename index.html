@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gist Notepad</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>📝 Gist Notepad</h1>
+
+  <input type="text" id="noteTitle" placeholder="Note title..." />
+  <textarea id="noteContent" rows="15" placeholder="Write your code or notes here..."></textarea>
+
+  <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+    <button onclick="saveNote()">💾 Save as Gist</button>
+    <button onclick="loadGists()">📂 Load My Gists</button>
+    <select id="gistList" onchange="loadSelectedGist()">
+      <option>-- Select a Gist --</option>
+    </select>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
