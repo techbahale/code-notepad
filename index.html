@@ -52,6 +52,535 @@
       z-index: 1;
     }
 
+    .line-number {
+      height: 1.5rem;
+      line-height: 1.5;
+    }
+
+    #noteContent {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      padding: 1rem 1rem 1rem 60px;
+      font-family: inherit;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #d4d4d4;
+      background: #1e1e1e;
+      border: none;
+      resize: none;
+      outline: none;
+      tab-size: 2;
+      overflow: auto;
+      z-index: 2;
+      white-space: pre;
+    }
+
+    .editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      margin-bottom: 0.5rem;
+    }
+
+    .token-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .token-field {
+      background: #252526;
+      color: #d4d4d4;
+      border: 1px solid #3c3c3c;
+      border-radius: 3px;
+      padding: 0.4rem;
+      font-family: inherit;
+      font-size: 0.85rem;
+      max-width: 250px;
+    }
+
+    .token-button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 0.4rem 0.75rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: background 0.2s;
+    }
+
+    .token-button:hover {
+      background-color: #1177bb;
+    }
+
+    .editor-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.5rem 0;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-bottom: 0.5rem;
+      gap: 1rem;
+    }
+
+    .action-button {
+      padding: 0.5rem 1.25rem;
+      font-size: 0.9rem;
+      background-color: #0e639c;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .action-button:hover {
+      background-color: #1177bb;
+    }
+
+    .action-button:disabled {
+      background-color: #333;
+      color: #666;
+      cursor: not-allowed;
+    }
+
+    #status {
+      font-size: 0.85rem;
+      color: #6A9955;
+      text-align: center;
+      height: 1rem;
+      transition: opacity 0.3s ease;
+    }
+
+    .save-error {
+      color: #f14c4c !important;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .theme-toggle label {
+      font-size: 0.85rem;
+      user-select: none;
+    }
+
+    .theme-toggle input {
+      cursor: pointer;
+    }
+
+    /* Light theme */
+    body.light-theme {
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    body.light-theme .editor-body {
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    body.light-theme .line-numbers {
+      background: #f0f0f0;
+      color: #999;
+    }
+
+    body.light-theme #noteContent {
+      background: #fff;
+      color: #333;
+    }
+
+    body.light-theme .token-field {
+      background: #fff;
+      color: #333;
+      border-color: #ddd;
+    }
+
+    body.light-theme #status {
+      color: #388A34;
+    }
+
+    body.light-theme .save-error {
+      color: #e51400 !important;
+    }
+
+    /* Responsive design */
+    @media (max-width: 600px) {
+      .editor-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+      }
+
+      .token-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .action-button {
+        font-size: 1rem;
+        padding: 0.6rem 1.5rem;
+      }
+
+      .editor-container {
+        padding: 0.5rem;
+      }
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="editor-container">
+    <div class="editor-header">
+      <h1>Notepad</h1>
+      <div class="token-container">
+        <input type="password" id="tokenField" class="token-field" placeholder="GitHub Token" />
+        <button class="token-button" id="saveTokenBtn">Save Token</button>
+      </div>
+    </div>
+
+    <div class="editor-body">
+      <div class="line-numbers" id="lineNumbers"></div>
+      <textarea id="noteContent" spellcheck="false" placeholder="Write your notes here..."></textarea>
+    </div>
+
+    <div class="editor-footer">
+      <div class="button-container">
+        <button class="action-button" id="loadBtn" onclick="loadNote()">📂 Load</button>
+        <button class="action-button" id="saveBtn" onclick="saveNote()">💾 Save</button>
+      </div>
+      <div id="status"></div>
+      <div class="theme-toggle">
+        <input type="checkbox" id="themeToggle" />
+        <label for="themeToggle">Light Theme</label>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const GIST_ID = "22a1a8c85b657b4faf769f4b75d849b1"; // Replace with your Gist ID
+    const FILENAME = "notes.txt"; // Replace with your file name
+    let GITHUB_TOKEN = localStorage.getItem("GITHUB_TOKEN") || "";
+    let lastSavedContent = "";
+    let saveTimeout = null;
+
+    // Initialize token field
+    const tokenField = document.getElementById("tokenField");
+    tokenField.value = GITHUB_TOKEN ? "•".repeat(12) : "";
+
+    // Token handling
+    document.getElementById("saveTokenBtn").addEventListener("click", function() {
+      const newToken = tokenField.value;
+      if (newToken && newToken !== "•".repeat(12)) {
+        localStorage.setItem("GITHUB_TOKEN", newToken);
+        GITHUB_TOKEN = newToken;
+        tokenField.value = "•".repeat(12);
+        showStatus("Token saved", false);
+        loadNote(); // Reload with new token
+      }
+    });
+
+    // Prevent token field from showing actual token again once masked
+    tokenField.addEventListener("focus", function() {
+      if (this.value === "•".repeat(12)) {
+        this.value = "";
+      }
+    });
+
+    tokenField.addEventListener("blur", function() {
+      if (this.value === "" && GITHUB_TOKEN) {
+        this.value = "•".repeat(12);
+      }
+    });
+
+    // Theme toggle
+    document.getElementById("themeToggle").addEventListener("change", function() {
+      document.body.classList.toggle("light-theme", this.checked);
+      localStorage.setItem("lightTheme", this.checked ? "true" : "false");
+    });
+
+    // Check for saved theme preference
+    if (localStorage.getItem("lightTheme") === "true") {
+      document.getElementById("themeToggle").checked = true;
+      document.body.classList.add("light-theme");
+    }
+
+    function showStatus(message, isError = false) {
+      const status = document.getElementById("status");
+      status.textContent = message;
+      status.className = isError ? "save-error" : "";
+      
+      if (message === "✅ Saved!" || message === "✅ Loaded!") {
+        setTimeout(() => {
+          if (status.textContent === message) {
+            status.textContent = "";
+          }
+        }, 2500);
+      }
+    }
+
+    function saveNote() {
+      const content = document.getElementById("noteContent").value;
+      
+      // Don't save if nothing changed
+      if (content === lastSavedContent) {
+        showStatus("No changes to save", false);
+        return;
+      }
+      
+      if (!GITHUB_TOKEN) {
+        showStatus("⚠️ Please enter GitHub token first", true);
+        return;
+      }
+
+      const saveBtn = document.getElementById("saveBtn");
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<div class="spinner"></div> Saving...';
+      showStatus("Saving...");
+
+      const payload = {
+        files: {
+          [FILENAME]: {
+            content: content
+          }
+        }
+      };
+
+      fetch(`https://api.github.com/gists/${GIST_ID}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `token ${GITHUB_TOKEN}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`HTTP error ${res.status}`);
+          }
+          return res.json();
+        })
+        .then((data) => {
+          if (data.files) {
+            showStatus("✅ Saved!");
+            lastSavedContent = content;
+          } else {
+            showStatus("❌ Save failed", true);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          if (err.message.includes("401")) {
+            showStatus("❌ Invalid token", true);
+          } else {
+            showStatus("❌ " + (err.message || "Network error"), true);
+          }
+        })
+        .finally(() => {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = '💾 Save';
+        });
+    }
+
+    function loadNote() {
+      if (!GITHUB_TOKEN) {
+        showStatus("⚠️ Please enter GitHub token first", true);
+        return;
+      }
+
+      const loadBtn = document.getElementById("loadBtn");
+      loadBtn.disabled = true;
+      loadBtn.innerHTML = '<div class="spinner"></div> Loading...';
+      showStatus("Loading...");
+
+      fetch(`https://api.github.com/gists/${GIST_ID}`, {
+        headers: {
+          Authorization: `token ${GITHUB_TOKEN}`
+        }
+      })
+        .then(res => {
+          if (!res.ok) {
+            if (res.status === 401) {
+              throw new Error("Invalid token");
+            } else if (res.status === 404) {
+              throw new Error("Gist not found");
+            }
+            throw new Error(`Error ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(gist => {
+          const file = gist.files[FILENAME];
+          if (file) {
+            document.getElementById("noteContent").value = file.content;
+            lastSavedContent = file.content;
+            updateLineNumbers();
+            showStatus("✅ Loaded!");
+          } else {
+            showStatus("⚠️ File not found in gist", true);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          showStatus("❌ " + (err.message || "Failed to load"), true);
+        })
+        .finally(() => {
+          loadBtn.disabled = false;
+          loadBtn.innerHTML = '📂 Load';
+        });
+    }
+
+    function updateLineNumbers() {
+      const textarea = document.getElementById("noteContent");
+      const lines = textarea.value.split('\n').length;
+      const lineNumbersDiv = document.getElementById("lineNumbers");
+      
+      // Only regenerate if number of lines changed
+      if (lineNumbersDiv.childElementCount !== lines) {
+        lineNumbersDiv.innerHTML = Array(lines).fill(0)
+          .map((_, i) => `<div class="line-number">${i + 1}</div>`)
+          .join('');
+      }
+    }
+
+    // Auto-save functionality (debounced)
+    document.getElementById("noteContent").addEventListener("input", function() {
+      updateLineNumbers();
+      
+      // Clear previous timeout
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+      }
+      
+      // Set new timeout for auto-save
+      saveTimeout = setTimeout(() => {
+        if (GITHUB_TOKEN && this.value !== lastSavedContent) {
+          saveNote();
+        }
+      }, 3000); // Auto-save after 3 seconds of inactivity
+    });
+
+    // Sync scroll between textarea and line numbers
+    document.getElementById("noteContent").addEventListener("scroll", function() {
+      document.getElementById("lineNumbers").scrollTop = this.scrollTop;
+    });
+
+    // Handle tab key properly
+    document.getElementById("noteContent").addEventListener("keydown", function(e) {
+      if (e.key === "Tab") {
+        e.preventDefault();
+        const start = this.selectionStart;
+        const end = this.selectionEnd;
+        
+        // Insert tab at cursor position
+        this.value = this.value.substring(0, start) + "  " + this.value.substring(end);
+        
+        // Move cursor after the inserted tab
+        this.selectionStart = this.selectionEnd = start + 2;
+        
+        // Update line numbers
+        updateLineNumbers();
+      }
+    });
+
+    // Initialize the app
+    window.onload = function() {
+      updateLineNumbers();
+      
+      // Only try to load if we have a token
+      if (GITHUB_TOKEN) {
+        loadNote();
+      } else {
+        showStatus("⚠️ Enter GitHub token to begin", false);
+      }
+    };
+  </script>
+</body>
+</html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Notepad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: Consolas, Monaco, Menlo, monospace;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      overflow: hidden;
+    }
+
+    .editor-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 1rem;
+      gap: 0.5rem;
+    }
+
+    .editor-body {
+      flex: 1;
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #252526;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .line-numbers {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 50px;
+      padding: 1rem 0.25rem;
+      text-align: right;
+      background: #1e1e1e;
+      color: #858585;
+      font-size: 0.9rem;
+      user-select: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
     #noteContent {
       position: absolute;
       left: 0;
@@ -241,7 +770,7 @@
     };
   </script>
 </body>
-</html>
+</html> -->
 
 
 <!-- <!DOCTYPE html>
