@@ -5,13 +5,36 @@ let GITHUB_TOKEN = localStorage.getItem("GITHUB_TOKEN");
 
 if (!GITHUB_TOKEN) {
   GITHUB_TOKEN = prompt("Paste your GitHub token:");
-  localStorage.setItem("GITHUB_TOKEN", GITHUB_TOKEN);
+  if (GITHUB_TOKEN) {
+    localStorage.setItem("GITHUB_TOKEN", GITHUB_TOKEN);
+  }
+}
+
+const statusEl = document.getElementById("status");
+const textarea = document.getElementById("noteContent");
+const charCountEl = document.getElementById("charCount");
+
+// Show status message with animation
+function showStatus(message, type = "info") {
+  statusEl.innerHTML = `<span class="status-icon">${type === "success" ? "✅" : type === "error" ? "❌" : "ℹ️"}</span> ${message}`;
+  statusEl.className = type;
+  
+  // After 3 seconds, fade out
+  setTimeout(() => {
+    statusEl.style.opacity = "0.6";
+  }, 3000);
 }
 
 function saveNote() {
-  const content = document.getElementById("noteContent").value;
-  const status = document.getElementById("status");
-
+  const content = textarea.value;
+  const saveButton = document.getElementById("saveButton");
+  
+  // Disable button during save
+  saveButton.disabled = true;
+  saveButton.textContent = "Saving...";
+  
+  showStatus("Saving note...", "info");
+  
   const payload = {
     files: {
       [FILENAME]: {
@@ -19,7 +42,7 @@ function saveNote() {
       }
     }
   };
-
+  
   fetch(`https://api.github.com/gists/${GIST_ID}`, {
     method: "PATCH",
     headers: {
@@ -28,44 +51,77 @@ function saveNote() {
     },
     body: JSON.stringify(payload)
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+      return res.json();
+    })
     .then((data) => {
       if (data.files) {
-        status.textContent = "✅ Note saved successfully!";
+        showStatus("Note saved successfully!", "success");
       } else {
-        status.textContent = "❌ Save failed.";
+        showStatus("Save failed. Check console for details.", "error");
       }
     })
     .catch((err) => {
       console.error(err);
-      status.textContent = "❌ Network error.";
+      showStatus(`Error: ${err.message}`, "error");
+    })
+    .finally(() => {
+      // Re-enable button after save attempt
+      saveButton.disabled = false;
+      saveButton.innerHTML = "<span>💾</span> Save";
     });
 }
 
-// 🆕 NEW: Load content on page load
+// Load content on page load
 function loadNote() {
-  const status = document.getElementById("status");
-
+  showStatus("Loading note...", "info");
+  
   fetch(`https://api.github.com/gists/${GIST_ID}`, {
     headers: {
       Authorization: `token ${GITHUB_TOKEN}`
     }
   })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+      return res.json();
+    })
     .then(gist => {
       const file = gist.files[FILENAME];
       if (file) {
-        document.getElementById("noteContent").value = file.content;
-        status.textContent = "📥 Note loaded.";
+        textarea.value = file.content;
+        showStatus("Note loaded successfully", "success");
+        updateCharCount();
       } else {
-        status.textContent = "⚠️ File not found in Gist.";
+        showStatus("File not found in Gist", "error");
       }
     })
     .catch(err => {
       console.error(err);
-      status.textContent = "❌ Failed to load note.";
+      showStatus(`Failed to load note: ${err.message}`, "error");
     });
 }
 
-// Call on page load
+// Update character count
+function updateCharCount() {
+  charCountEl.textContent = textarea.value.length;
+}
+
+// Event listeners
+textarea.addEventListener('input', updateCharCount);
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+  // Ctrl+S or Cmd+S to save
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    saveNote();
+  }
+});
+
+// Load note on page load
 window.onload = loadNote;
