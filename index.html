@@ -6,16 +6,18 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-   <div class="editor-container">    
+  <div class="editor-container">    
     <div class="editor-body">
       <textarea id="noteContent" spellcheck="false" placeholder="SFMC Notes"></textarea>
     </div>
     
     <div class="editor-footer">
-      <button class="save-button" onclick="saveNote()">
-        <span>💾</span>
-        <span>Save</span>
-      </button>
+      <div class="button-container">
+        <button class="save-button" onclick="saveNote()">
+          <span>💾</span>
+          <span>Save</span>
+        </button>
+      </div>
       <div id="status"></div>
     </div>
   </div>
