@@ -1,23 +1,26 @@
-const GITHUB_TOKEN = localStorage.getItem('GITHUB_TOKEN') || prompt("Paste your GitHub token:");
-localStorage.setItem('GITHUB_TOKEN', GITHUB_TOKEN);
-const API_URL = "https://api.github.com/gists";
+const GIST_ID = "22a1a8c85b657b4faf769f4b75d849b1"; // Replace with your Gist ID
+const FILENAME = "gistfile1.txt"; // Replace with your filename
+let GITHUB_TOKEN = localStorage.getItem("GITHUB_TOKEN");
+
+if (!GITHUB_TOKEN) {
+  GITHUB_TOKEN = prompt("Paste your GitHub token:");
+  localStorage.setItem("GITHUB_TOKEN", GITHUB_TOKEN);
+}
 
 function saveNote() {
-  const title = document.getElementById("noteTitle").value || "Untitled";
   const content = document.getElementById("noteContent").value;
+  const status = document.getElementById("status");
 
   const payload = {
-    description: title,
-    public: false, // secret gist
     files: {
-      [`${title}.txt`]: {
+      [FILENAME]: {
         content: content
       }
     }
   };
 
-  fetch(API_URL, {
-    method: "POST",
+  fetch(`https://api.github.com/gists/${GIST_ID}`, {
+    method: "PATCH",
     headers: {
       Authorization: `token ${GITHUB_TOKEN}`,
       "Content-Type": "application/json"
@@ -26,56 +29,14 @@ function saveNote() {
   })
     .then((res) => res.json())
     .then((data) => {
-      alert("Note saved successfully!");
-      console.log("Gist URL:", data.html_url);
+      if (data.files) {
+        status.textContent = "✅ Note saved successfully!";
+      } else {
+        status.textContent = "❌ Save failed. Check token and Gist ID.";
+      }
     })
     .catch((err) => {
       console.error(err);
-      alert("Failed to save note.");
-    });
-}
-
-function loadGists() {
-  fetch(API_URL, {
-    headers: {
-      Authorization: `token ${GITHUB_TOKEN}`
-    }
-  })
-    .then((res) => res.json())
-    .then((gists) => {
-      const select = document.getElementById("gistList");
-      select.innerHTML = `<option>-- Select a Gist --</option>`;
-      gists.forEach((gist) => {
-        const filename = Object.keys(gist.files)[0];
-        const option = document.createElement("option");
-        option.value = gist.id;
-        option.text = gist.description || filename;
-        select.appendChild(option);
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-      alert("Failed to load Gists.");
-    });
-}
-
-function loadSelectedGist() {
-  const gistId = document.getElementById("gistList").value;
-  if (!gistId) return;
-
-  fetch(`https://api.github.com/gists/${gistId}`, {
-    headers: {
-      Authorization: `token ${GITHUB_TOKEN}`
-    }
-  })
-    .then((res) => res.json())
-    .then((gist) => {
-      const file = Object.values(gist.files)[0];
-      document.getElementById("noteTitle").value = gist.description;
-      document.getElementById("noteContent").value = file.content;
-    })
-    .catch((err) => {
-      console.error(err);
-      alert("Failed to load the selected Gist.");
+      status.textContent = "❌ Network error.";
     });
 }
