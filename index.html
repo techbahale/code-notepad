@@ -6,6 +6,43 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="editor-container">
+    <div class="editor-header">
+      <div class="editor-title">
+        <span>📝</span>
+        <span id="filename">notes.txt</span>
+      </div>
+      <div class="file-info">
+        <span id="lineCount">0 lines</span>
+      </div>
+    </div>
+    
+    <div class="editor-body">
+      <div class="line-numbers" id="lineNumbers"></div>
+      <textarea id="noteContent" spellcheck="false" placeholder="SFMC Notes"></textarea>
+    </div>
+    
+    <div class="editor-footer">
+      <div class="button-container">
+        <button class="save-button" onclick="saveNote()">
+          <span>💾</span>
+          <span>Save</span>
+        </button>
+      </div>
+      <div id="status"></div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Notepad</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
   <div class="editor-container">    
     <div class="editor-body">
       <textarea id="noteContent" spellcheck="false" placeholder="SFMC Notes"></textarea>
@@ -24,3 +61,4 @@
   <script src="app.js"></script>
 </body>
 </html>
+ -->
