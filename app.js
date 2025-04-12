@@ -1,3 +1,4 @@
+Working:
 const GIST_ID = "22a1a8c85b657b4faf769f4b75d849b1"; // Replace with your Gist ID
 const FILENAME = "notes.txt"; // Replace with your filename
 
@@ -5,36 +6,13 @@ let GITHUB_TOKEN = localStorage.getItem("GITHUB_TOKEN");
 
 if (!GITHUB_TOKEN) {
   GITHUB_TOKEN = prompt("Paste your GitHub token:");
-  if (GITHUB_TOKEN) {
-    localStorage.setItem("GITHUB_TOKEN", GITHUB_TOKEN);
-  }
-}
-
-const statusEl = document.getElementById("status");
-const textarea = document.getElementById("noteContent");
-const charCountEl = document.getElementById("charCount");
-
-// Show status message with animation
-function showStatus(message, type = "info") {
-  statusEl.innerHTML = `<span class="status-icon">${type === "success" ? "✅" : type === "error" ? "❌" : "ℹ️"}</span> ${message}`;
-  statusEl.className = type;
-  
-  // After 3 seconds, fade out
-  setTimeout(() => {
-    statusEl.style.opacity = "0.6";
-  }, 3000);
+  localStorage.setItem("GITHUB_TOKEN", GITHUB_TOKEN);
 }
 
 function saveNote() {
-  const content = textarea.value;
-  const saveButton = document.getElementById("saveButton");
-  
-  // Disable button during save
-  saveButton.disabled = true;
-  saveButton.textContent = "Saving...";
-  
-  showStatus("Saving note...", "info");
-  
+  const content = document.getElementById("noteContent").value;
+  const status = document.getElementById("status");
+
   const payload = {
     files: {
       [FILENAME]: {
@@ -42,7 +20,7 @@ function saveNote() {
       }
     }
   };
-  
+
   fetch(`https://api.github.com/gists/${GIST_ID}`, {
     method: "PATCH",
     headers: {
@@ -51,77 +29,44 @@ function saveNote() {
     },
     body: JSON.stringify(payload)
   })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`);
-      }
-      return res.json();
-    })
+    .then((res) => res.json())
     .then((data) => {
       if (data.files) {
-        showStatus("Note saved successfully!", "success");
+        status.textContent = "✅ Note saved successfully!";
       } else {
-        showStatus("Save failed. Check console for details.", "error");
+        status.textContent = "❌ Save failed.";
       }
     })
     .catch((err) => {
       console.error(err);
-      showStatus(`Error: ${err.message}`, "error");
-    })
-    .finally(() => {
-      // Re-enable button after save attempt
-      saveButton.disabled = false;
-      saveButton.innerHTML = "<span>💾</span> Save";
+      status.textContent = "❌ Network error.";
     });
 }
 
-// Load content on page load
+// 🆕 NEW: Load content on page load
 function loadNote() {
-  showStatus("Loading note...", "info");
-  
+  const status = document.getElementById("status");
+
   fetch(`https://api.github.com/gists/${GIST_ID}`, {
     headers: {
       Authorization: `token ${GITHUB_TOKEN}`
     }
   })
-    .then(res => {
-      if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`);
-      }
-      return res.json();
-    })
+    .then(res => res.json())
     .then(gist => {
       const file = gist.files[FILENAME];
       if (file) {
-        textarea.value = file.content;
-        showStatus("Note loaded successfully", "success");
-        updateCharCount();
+        document.getElementById("noteContent").value = file.content;
+        status.textContent = "📥 Note loaded.";
       } else {
-        showStatus("File not found in Gist", "error");
+        status.textContent = "⚠️ File not found in Gist.";
       }
     })
     .catch(err => {
       console.error(err);
-      showStatus(`Failed to load note: ${err.message}`, "error");
+      status.textContent = "❌ Failed to load note.";
     });
 }
 
-// Update character count
-function updateCharCount() {
-  charCountEl.textContent = textarea.value.length;
-}
-
-// Event listeners
-textarea.addEventListener('input', updateCharCount);
-
-// Keyboard shortcuts
-document.addEventListener('keydown', function(e) {
-  // Ctrl+S or Cmd+S to save
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-    e.preventDefault();
-    saveNote();
-  }
-});
-
-// Load note on page load
+// Call on page load
 window.onload = loadNote;
