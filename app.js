@@ -1,5 +1,5 @@
 const GIST_ID = "22a1a8c85b657b4faf769f4b75d849b1"; // Replace with your Gist ID
-const FILENAME = "gistfile1.txt"; // Replace with your filename
+const FILENAME = "notes.txt"; // Replace with your filename
 let GITHUB_TOKEN = localStorage.getItem("GITHUB_TOKEN");
 
 if (!GITHUB_TOKEN) {
