@@ -1,5 +1,6 @@
 const GIST_ID = "22a1a8c85b657b4faf769f4b75d849b1"; // Replace with your Gist ID
 const FILENAME = "notes.txt"; // Replace with your filename
+
 let GITHUB_TOKEN = localStorage.getItem("GITHUB_TOKEN");
 
 if (!GITHUB_TOKEN) {
@@ -32,7 +33,7 @@ function saveNote() {
       if (data.files) {
         status.textContent = "✅ Note saved successfully!";
       } else {
-        status.textContent = "❌ Save failed. Check token and Gist ID.";
+        status.textContent = "❌ Save failed.";
       }
     })
     .catch((err) => {
@@ -40,3 +41,31 @@ function saveNote() {
       status.textContent = "❌ Network error.";
     });
 }
+
+// 🆕 NEW: Load content on page load
+function loadNote() {
+  const status = document.getElementById("status");
+
+  fetch(`https://api.github.com/gists/${GIST_ID}`, {
+    headers: {
+      Authorization: `token ${GITHUB_TOKEN}`
+    }
+  })
+    .then(res => res.json())
+    .then(gist => {
+      const file = gist.files[FILENAME];
+      if (file) {
+        document.getElementById("noteContent").value = file.content;
+        status.textContent = "📥 Note loaded.";
+      } else {
+        status.textContent = "⚠️ File not found in Gist.";
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      status.textContent = "❌ Failed to load note.";
+    });
+}
+
+// Call on page load
+window.onload = loadNote;
