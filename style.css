@@ -1,46 +1,43 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 2rem;
-    background-color: #f4f4f4;
-    color: #333;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  input[type="text"],
-  textarea,
-  button,
-  select {
-    width: 100%;
-    max-width: 800px;
-    margin: 1rem auto;
-    display: block;
-    padding: 0.75rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-  
-  textarea {
-    font-family: monospace;
-    resize: vertical;
-  }
-  
-  button {
-    background-color: #007acc;
-    color: white;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-  
-  button:hover {
-    background-color: #005fa3;
-  }
-  
-  select {
-    background-color: #fff;
-  }
-  
+  font-family: Arial, sans-serif;
+  padding: 2rem;
+  background: #f4f4f4;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+textarea {
+  width: 100%;
+  max-width: 800px;
+  height: 300px;
+  display: block;
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: monospace;
+  font-size: 1rem;
+}
+
+button {
+  display: block;
+  margin: 1rem auto;
+  padding: 0.75rem 2rem;
+  background: #007acc;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #005fa3;
+}
+
+#status {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: green;
+}
