@@ -23,33 +23,10 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
-      padding: 1.5rem;
+      padding: 1rem;
       gap: 1rem;
       max-width: 1400px;
       margin: 0 auto;
-    }
-
-    .editor-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid #333;
-      margin-bottom: 0.5rem;
-    }
-
-    .editor-title {
-      font-size: 1.25rem;
-      font-weight: 500;
-      color: #61afef;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .editor-title svg {
-      width: 1.25rem;
-      height: 1.25rem;
     }
 
     .editor-body {
@@ -59,11 +36,6 @@
       overflow: hidden;
       background: #252526;
       box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
-      transition: box-shadow 0.3s ease;
-    }
-
-    .editor-body:focus-within {
-      box-shadow: 0 6px 32px rgba(97, 175, 239, 0.2);
     }
 
     .line-numbers {
@@ -71,7 +43,7 @@
       left: 0;
       top: 0;
       bottom: 0;
-      width: 60px;
+      width: 50px;
       padding: 1rem 0.5rem;
       text-align: right;
       background: #1e1e1e;
@@ -86,7 +58,6 @@
     .line-numbers div {
       opacity: 0.8;
       padding: 0 0.5rem;
-      transition: color 0.2s;
     }
 
     #noteContent {
@@ -95,7 +66,7 @@
       top: 0;
       width: 100%;
       height: 100%;
-      padding: 1rem 1.5rem 1rem 70px;
+      padding: 1rem 1rem 1rem 60px;
       font-family: inherit;
       font-size: 1rem;
       line-height: 1.6;
@@ -107,25 +78,20 @@
       tab-size: 2;
       overflow: auto;
       z-index: 2;
-      transition: background-color 0.3s ease;
-    }
-
-    #noteContent:focus {
-      background: #252526;
     }
 
     .editor-footer {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 0.75rem 0;
+      padding: 0.5rem 0;
     }
 
     .button-container {
       display: flex;
       justify-content: center;
       width: 100%;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
     }
 
     .save-button {
@@ -143,14 +109,12 @@
       font-weight: 500;
       letter-spacing: 0.02em;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      min-width: 140px;
+      min-width: 120px;
       justify-content: center;
     }
 
     .save-button:hover {
       background-color: #3a7dbd;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(46, 113, 176, 0.3);
     }
 
     .save-button:active {
@@ -158,89 +122,91 @@
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     }
 
-    .save-button svg {
-      width: 1.25rem;
-      height: 1.25rem;
-    }
-
     #status {
       font-size: 0.9rem;
       color: #6A9955;
       text-align: center;
       height: 1.5rem;
-      transition: all 0.3s ease;
-      opacity: 0.9;
+      opacity: 0;
       margin-top: 0.25rem;
+      transition: opacity 0.3s ease;
     }
 
-    .status-fade {
-      animation: fadeOut 2s forwards;
-      animation-delay: 1s;
-    }
-
-    @keyframes fadeOut {
-      from { opacity: 0.9; }
-      to { opacity: 0; }
+    #status.visible {
+      opacity: 0.9;
     }
 
     .save-error {
       color: #f14c4c !important;
     }
 
+    .auto-save-indicator {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-size: 0.75rem;
+      color: #6b6b6b;
+      background-color: rgba(30, 30, 30, 0.7);
+      padding: 2px 6px;
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .auto-save-indicator.saving {
+      opacity: 1;
+    }
+
     /* Responsive styles */
     @media (max-width: 768px) {
       .editor-container {
-        padding: 1rem;
-      }
-      
-      .editor-header {
-        padding-bottom: 0.5rem;
-      }
-      
-      .editor-title {
-        font-size: 1.1rem;
+        padding: 0.75rem;
+        gap: 0.75rem;
       }
       
       .line-numbers {
-        width: 50px;
+        width: 40px;
       }
       
       #noteContent {
-        padding-left: 60px;
+        padding-left: 50px;
         font-size: 0.95rem;
+      }
+      
+      .save-button {
+        padding: 0.6rem 1.5rem;
       }
     }
 
     @media (max-width: 480px) {
       .editor-container {
-        padding: 0.75rem;
+        padding: 0.5rem;
         gap: 0.5rem;
       }
       
-      .editor-header {
-        margin-bottom: 0.25rem;
-      }
-      
       .line-numbers {
-        width: 40px;
+        width: 35px;
         padding: 1rem 0.25rem;
         font-size: 0.8rem;
       }
       
       #noteContent {
-        padding: 1rem 1rem 1rem 45px;
+        padding: 1rem 0.75rem 1rem 40px;
         font-size: 0.9rem;
       }
       
       .save-button {
-        padding: 0.6rem 1.5rem;
+        padding: 0.6rem 1.25rem;
         font-size: 0.9rem;
+        min-width: 100px;
       }
     }
 
     /* Scrollbar styles */
     #noteContent::-webkit-scrollbar {
-      width: 10px;
+      width: 8px;
     }
 
     #noteContent::-webkit-scrollbar-track {
@@ -249,7 +215,7 @@
 
     #noteContent::-webkit-scrollbar-thumb {
       background: #444;
-      border-radius: 5px;
+      border-radius: 4px;
     }
 
     #noteContent::-webkit-scrollbar-thumb:hover {
@@ -259,33 +225,16 @@
 </head>
 <body>
   <div class="editor-container">
-<!--     <div class="editor-header">
-      <div class="editor-title">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-          <polyline points="14 2 14 8 20 8"></polyline>
-          <line x1="16" y1="13" x2="8" y2="13"></line>
-          <line x1="16" y1="17" x2="8" y2="17"></line>
-          <polyline points="10 9 9 9 8 9"></polyline>
-        </svg>
-        Cloud Notepad
-      </div>
-    </div> -->
-
     <div class="editor-body">
       <div class="line-numbers" id="lineNumbers"></div>
       <textarea id="noteContent" spellcheck="false" placeholder="Write your notes here..."></textarea>
+      <div class="auto-save-indicator" id="autoSaveIndicator">Saving...</div>
     </div>
 
     <div class="editor-footer">
       <div class="button-container">
-        <button class="save-button" onclick="saveNote()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-            <polyline points="17 21 17 13 7 13 7 21"></polyline>
-            <polyline points="7 3 7 8 15 8"></polyline>
-          </svg>
-          Save
+        <button class="save-button" onclick="saveNote(true)">
+          Save Now
         </button>
       </div>
       <div id="status"></div>
@@ -296,16 +245,46 @@
     const GIST_ID = "22a1a8c85b657b4faf769f4b75d849b1"; // Replace with your Gist ID
     const FILENAME = "notes.txt"; // Replace with your file name
     let GITHUB_TOKEN = localStorage.getItem("GITHUB_TOKEN");
-
+    let lastSavedContent = "";
+    let saveTimeout = null;
+    let isSaving = false;
+    
     if (!GITHUB_TOKEN) {
       GITHUB_TOKEN = prompt("Paste your GitHub token:");
       localStorage.setItem("GITHUB_TOKEN", GITHUB_TOKEN);
     }
 
-    function saveNote() {
-      const content = document.getElementById("noteContent").value;
+    function showStatus(message, isError = false) {
       const status = document.getElementById("status");
-      status.classList.remove("status-fade");
+      status.textContent = message;
+      status.className = isError ? "save-error visible" : "visible";
+      
+      // Automatically hide after 3 seconds
+      setTimeout(() => {
+        status.className = status.className.replace("visible", "");
+      }, 3000);
+    }
+    
+    function showAutoSaveIndicator(show) {
+      const indicator = document.getElementById("autoSaveIndicator");
+      indicator.className = show ? "auto-save-indicator saving" : "auto-save-indicator";
+    }
+
+    function saveNote(manualSave = false) {
+      // If already saving, don't start another save
+      if (isSaving) return;
+      
+      const content = document.getElementById("noteContent").value;
+      
+      // If content hasn't changed since last save, don't save again
+      if (content === lastSavedContent && !manualSave) return;
+      
+      isSaving = true;
+      showAutoSaveIndicator(true);
+      
+      if (manualSave) {
+        showStatus("Saving...");
+      }
 
       const payload = {
         files: {
@@ -315,67 +294,77 @@
         }
       };
 
-      status.textContent = "Saving...";
-      status.className = "";
-
       fetch(`https://api.github.com/gists/${GIST_ID}`, {
         method: "PATCH",
         headers: {
-          Authorization: `token ${GITHUB_TOKEN}`,
+          "Authorization": `token ${GITHUB_TOKEN}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
       })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.files) {
-            status.textContent = "✅ Saved successfully!";
-            status.classList.add("status-fade");
-            setTimeout(() => {
-              if (status.textContent === "✅ Saved successfully!") {
-                status.textContent = "";
-              }
-            }, 3000);
-          } else {
-            status.textContent = "❌ Save failed";
-            status.className = "save-error";
+      .then((res) => res.json())
+      .then((data) => {
+        isSaving = false;
+        showAutoSaveIndicator(false);
+        
+        if (data.files) {
+          lastSavedContent = content;
+          if (manualSave) {
+            showStatus("✅ Saved successfully!");
           }
-        })
-        .catch((err) => {
-          console.error(err);
-          status.textContent = "❌ Network error";
-          status.className = "save-error";
-        });
+        } else {
+          if (manualSave) {
+            showStatus("❌ Save failed", true);
+          }
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        isSaving = false;
+        showAutoSaveIndicator(false);
+        if (manualSave) {
+          showStatus("❌ Network error", true);
+        }
+      });
     }
 
     function loadNote() {
-      const status = document.getElementById("status");
+      showStatus("Loading...");
 
       fetch(`https://api.github.com/gists/${GIST_ID}`, {
         headers: {
-          Authorization: `token ${GITHUB_TOKEN}`
+          "Authorization": `token ${GITHUB_TOKEN}`
         }
       })
-        .then(res => {
-          if (!res.ok) throw new Error("Failed to fetch Gist");
-          return res.json();
-        })
-        .then(gist => {
-          const file = gist.files[FILENAME];
-          if (file) {
-            document.getElementById("noteContent").value = file.content;
-            updateLineNumbers();
-            status.textContent = "";
-          } else {
-            status.textContent = "File not found";
-            status.className = "save-error";
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          status.textContent = "Failed to load";
-          status.className = "save-error";
-        });
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch Gist");
+        return res.json();
+      })
+      .then(gist => {
+        const file = gist.files[FILENAME];
+        if (file) {
+          document.getElementById("noteContent").value = file.content;
+          lastSavedContent = file.content;
+          updateLineNumbers();
+          showStatus("Loaded successfully!");
+        } else {
+          showStatus("File not found", true);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        showStatus("Failed to load", true);
+      });
+    }
+
+    function autoSave() {
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+      }
+      
+      saveTimeout = setTimeout(() => {
+        saveNote();
+      }, 2000); // Wait 2 seconds after typing stops before auto-saving
     }
 
     function updateLineNumbers() {
@@ -395,7 +384,10 @@
     // Enhanced event listeners
     const textarea = document.getElementById("noteContent");
     
-    textarea.addEventListener("input", updateLineNumbers);
+    textarea.addEventListener("input", function() {
+      updateLineNumbers();
+      autoSave();
+    });
     
     textarea.addEventListener("keydown", function(e) {
       if (e.key === 'Tab') {
@@ -411,6 +403,7 @@
         
         // Update line numbers
         updateLineNumbers();
+        autoSave();
       }
     });
     
@@ -422,7 +415,7 @@
     document.addEventListener("keydown", function(e) {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
-        saveNote();
+        saveNote(true);
       }
     });
 
